@@ -6,45 +6,44 @@ using System.Threading.Tasks;
 
 namespace StackCollection
 {
-    class Stack
+    public class Stack
     {
-        public readonly List<string> items = new();
-        public int Size => items.Count;
-        public string? Top => items.Count <= 0 ? null : items[^1];
+        private StackItem? top;
+        public int Size { get; private set; }
         public Stack(params string[] items)
         {
             foreach (var item in items)
             {
-                this.items.Add(item);
+                Push(item);
             }
         }
-        public void AddString(string item)
+        public string? Top => top?.Value;
+        public void Push(string item)
         {
-            items.Add(item);
+            top = new StackItem(item, top);
+            Size++;
         }
         public string Pop()
         {
-            if (items.Count == 0)
+            if (top == null)
             {
-                throw new Exception("Stack is empty!");
+                throw new StackOverflowException("Stack is empty");
             }
-            string result = items[Size - 1];
-            items.Remove(result);
-            return result;
+             var item = top.Value;
+            top = top.Previous;
+            Size--;
+             return item;
         }
         public static Stack Concat(params Stack[] stacks)
         {
             var result = new Stack();
 
-            foreach (var stack in stacks)
+            for (int i = 0; i < stacks.Length; i++)
             {
-                var reversedStack = new Stack(stack.items.ToArray().Reverse().ToArray());
-                foreach (var item in reversedStack.items)
-                {
-                    result.AddString(item);
-                }
+                result.Merge(stacks[i]);
             }
             return result;
         }
     }
 }
+

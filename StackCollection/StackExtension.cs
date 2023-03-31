@@ -1,19 +1,17 @@
 ﻿
-using System.Collections.Generic;
+using System.Collections;
+using System.Drawing;
+
 namespace StackCollection
 {
     static class MyStackExtension
     {
         public static void Merge(this Stack s1, Stack s2)
         {
-            var temp = new List<string>(s2.items);
-            temp.Reverse();
-
-            foreach (var item in temp)
+            while (s2.Size > 0)
             {
-                s1.items.Add(item);
+                s1.Push(s2.Pop());
             }
-          
         }
     }
 }
